@@ -4,14 +4,24 @@ import type { PixabayImage } from "./types/pixabay";
 import "izitoast/dist/css/iziToast.min.css";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-type RenderAPI = {};
-
-type RenderElements = {};
+export interface RenderAPI {
+  createGallery: (images: PixabayImage[]) => void;
+  clearGallery: () => void;
+  showLoader: () => void;
+  hideLoader: () => void;
+  showLoadMoreButton: () => void;
+  hideLoadMoreButton: () => void;
+  showToast: (text: string) => void;
+}
+export interface RenderElements {
+  gallery: HTMLUListElement;
+  loader: HTMLElement;
+  loadMoreButton: HTMLButtonElement;
+}
 
 export function initRender(elements: RenderElements): RenderAPI {
   const { gallery, loader, loadMoreButton } = elements;
 
-  // initial UI state
   loader.style.display = "none";
   loadMoreButton.style.display = "none";
 
@@ -20,20 +30,23 @@ export function initRender(elements: RenderElements): RenderAPI {
     captionDelay: 250,
   });
 
-  const createGallery = (images) => {
+  const createGallery = (images: PixabayImage[]): void => {
     const galleryItems = images
       .map(
         (image) => `
-          <a href="${image.largeImageURL}">
-            <img
-              src="${image.webformatURL}"
-              alt="${image.tags}"
-              title="${image.tags}"
-              width="100"
-              height="100"
-              loading="lazy"
-            />
-          </a>`
+          <li class="gallery-item">
+            <a class="gallery-link" href="${image.largeImageURL}">
+              <img
+                class="gallery-image"
+                src="${image.webformatURL}"
+                alt="${image.tags}"
+                title="${image.tags}"
+                width="100"
+                height="100"
+                loading="lazy"
+              />
+            </a>
+          </li>`
       )
       .join("");
 
@@ -41,27 +54,27 @@ export function initRender(elements: RenderElements): RenderAPI {
     lightbox.refresh();
   };
 
-  const clearGallery = () => {
+  const clearGallery = (): void => {
     gallery.innerHTML = "";
   };
 
-  const showLoader = () => {
+  const showLoader = (): void => {
     loader.style.display = "block";
   };
 
-  const hideLoader = () => {
+  const hideLoader = (): void => {
     loader.style.display = "none";
   };
 
-  const showLoadMoreButton = () => {
+  const showLoadMoreButton = (): void => {
     loadMoreButton.style.display = "block";
   };
 
-  const hideLoadMoreButton = () => {
+  const hideLoadMoreButton = (): void => {
     loadMoreButton.style.display = "none";
   };
 
-  const showToast = (text: string) => {
+  const showToast = (text: string): void => {
     iziToast.info({ message: text, position: "topRight" });
   };
 
